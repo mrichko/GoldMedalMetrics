@@ -110,7 +110,7 @@ Returns a SQL query string that will find the number of male medalists.
 */
 
 const numberMenMedalists = country => {
-  return `SELECT DISTINCT name, year, gender, COUNT(*) AS count FROM GoldMedal WHERE country = '${country} and gender = 'Men'
+  return `SELECT name, gender, COUNT(DISTINCT name) AS count FROM GoldMedal WHERE country = '${country}' and gender = 'Men'
   GROUP BY gender
   ORDER BY COUNT(*)`;
 };
@@ -120,7 +120,9 @@ Returns a SQL query string that will find the number of female medalists.
 */
 
 const numberWomenMedalists = country => {
-  return `SELECT `;
+  return `SELECT name, gender, COUNT(DISTINCT name) AS count FROM GoldMedal WHERE country = '${country}' and gender = 'Women'
+  GROUP BY gender
+  ORDER BY COUNT(*)`;
 };
 
 /*
@@ -128,8 +130,12 @@ Returns a SQL query string that will find the athlete with the most medals.
 */
 
 const mostMedaledAthlete = country => {
-  return;
+  return `SELECT name FROM GoldMedal WHERE country = '${country}'
+  GROUP BY name
+  ORDER BY COUNT(*) DESC LIMIT 1;`;
 };
+
+
 
 /*
 Returns a SQL query string that will find the medals a country has won
@@ -137,8 +143,17 @@ optionally ordered by the given field in the specified direction.
 */
 
 const orderedMedals = (country, field, sortAscending) => {
-  return;
+  let orderingString = '';
+  if (field){
+    if (sortAscending) {
+      orderingString = `ORDER BY ${field} ASC`;
+    } else {
+      orderingString = `ORDER BY ${field} DESC`;
+    }
+  }
+  return `SELECT * FROM GoldMedal WHERE country = '${country}' ${orderingString}`;
 };
+
 
 /*
 Returns a SQL query string that will find the sports a country has
@@ -148,8 +163,17 @@ aliased as 'percent'. Optionally ordered by the given field in the specified dir
 */
 
 const orderedSports = (country, field, sortAscending) => {
-  return;
+  let orderingString = '';
+  if (field) {
+    if (sortAscending) {
+      orderingString = `ORDER BY ${field} ASC`;
+    } else {
+      orderingString = `ORDER BY ${field} DESC`;
+    }
+  }
+  return `SELECT `;
 };
+
 
 module.exports = {
   createCountryTable,
